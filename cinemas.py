@@ -52,7 +52,7 @@ def output_movies_to_console(movies):
     movies = sorted(movies, key=lambda x: x['rating'] if x['rating'] else 0, reverse=True)
     print('\nTOP-10 movies on view in Saint Petersburg:')
     for i, movie in enumerate(movies[:10], start=1):
-        print('{0}. "{title}", {year}, rating: {rating}, shedule: {1}{href}'.format(i, URL_AFISHA, **movie))
+        print('{0}. "{title}", {year}, rating: {rating}, schedule: {1}{href}'.format(i, URL_AFISHA, **movie))
     print('. '*len(movies))
 
 
