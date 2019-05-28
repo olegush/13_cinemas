@@ -6,6 +6,7 @@ from fake_useragent import UserAgent
 
 URL_AFISHA = 'https://www.afisha.ru/spb'
 URL_KINOPOISK = 'https://www.kinopoisk.ru/index.php'
+DELAY = '1'
 
 def fetch_url(url, params):
     headers = {'user-agent': UserAgent().chrome}
@@ -19,7 +20,7 @@ def parse_afisha_list():
     movies = []
     for movie in soup.find_all('div', class_='new-list__item-info'):
         title = movie.find('a', class_='new-list__item-link').string
-        year = movie.find('div', class_='new-list__item-status').string[0:4]
+        year = movie.find('div', class_='new-list__item-status').string[:4]
         href = movie.find('a', class_='new-list__item-link')['href']
         movies.append({'title': title, 'year': year, 'href': href})
     return movies
@@ -48,7 +49,7 @@ def output_movies_to_console(movies):
         rating_kp = fetch_movie_info(movie['title'], movie['year'])
         print('. ', end='', flush=True)
         movie['rating'] = rating_kp
-        time.sleep(1)
+        time.sleep(DELAY)
     movies = sorted(movies, key=lambda x: x['rating'] if x['rating'] else 0, reverse=True)
     print('\nTOP-10 movies on view in Saint Petersburg:')
     for i, movie in enumerate(movies[:10], start=1):
