@@ -6,7 +6,7 @@ from fake_useragent import UserAgent
 
 URL_AFISHA = ''
 
-DELAY = '1'
+DELAY = 1
 
 
 def get_content(url, params):
@@ -34,11 +34,10 @@ def get_kinopoisk_rating(content, year):
             year_kp = title_tag.parent.parent.parent.find(
                 'span',
                 class_='year').string
-            if year == year_kp:
-                rating_kp = title_tag.parent.parent.parent.find(
-                    'div',
-                    class_='rating').string
-                return float(rating_kp)
+            rating_kp = title_tag.parent.parent.parent.find(
+                'div',
+                class_='rating').string
+            return float(rating_kp) if year == year_kp else None
     except (TypeError, AttributeError):
         pass
 
@@ -53,8 +52,9 @@ def output_movies_to_console(movies, url_afisha):
 
 if __name__ == '__main__':
     print('Afisha parsing...\n')
-    url_afisha = 'https://www.afisha.ru/spb/schedule_cinema/?view=list'
-    content_afisha = get_content(url_afisha, '')
+    payload_afisha = {'view': 'list'}
+    url_afisha = 'https://www.afisha.ru/spb/schedule_cinema/'
+    content_afisha = get_content(url_afisha, payload_afisha)
     movies = parse_afisha_page(content_afisha)
 
     print('Kinopoisk parsing...\n')
@@ -65,6 +65,8 @@ if __name__ == '__main__':
             movie['year'])}
         content_kinopoisk = get_content(url_kinopoisk, payload_kinopoisk)
         movie['rating'] = get_kinopoisk_rating(content_kinopoisk, movie['year'])
+        time.sleep(DELAY)
+
     movies = sorted(
         movies,
         key=lambda x: x['rating'] if x['rating'] else 0,
